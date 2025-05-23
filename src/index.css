@@ -108,7 +108,7 @@
   }
   
   .sidebar-item {
-    @apply flex items-center px-4 py-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-all duration-200 cursor-pointer group;
+    @apply flex items-center px-4 py-3 text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-all duration-200 cursor-pointer;
   }
   
   .sidebar-item.active {

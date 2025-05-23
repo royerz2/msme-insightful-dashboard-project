@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`sidebar-item ${isActive ? 'active' : ''}`}
+                  className={`sidebar-item group ${isActive ? 'active' : ''}`}
                   onClick={() => window.innerWidth < 768 && onToggle()}
                 >
                   <span className="text-xl mr-3">{item.icon}</span>
