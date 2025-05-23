@@ -1,8 +1,10 @@
 
+// API Response types
 export interface ApiResponse<T> {
   data?: T;
   loading: boolean;
   error: string | null;
+  useDummyData?: boolean;
 }
 
 export interface HealthResponse {
@@ -10,26 +12,10 @@ export interface HealthResponse {
   total_records: number;
 }
 
-export interface DemographicDistribution {
+export interface Distribution {
   labels: string[];
   values: number[];
   percentages: number[];
-}
-
-export interface DemographicsData {
-  distributions: {
-    gender: DemographicDistribution;
-    respondent_age: DemographicDistribution;
-    education: DemographicDistribution;
-    position: DemographicDistribution;
-    business_field: DemographicDistribution;
-    business_age: DemographicDistribution;
-    business_employee: DemographicDistribution;
-  };
-  cross_tabulations: {
-    gender_vs_position: CrossTabulation;
-    education_vs_business: CrossTabulation;
-  };
 }
 
 export interface CrossTabulation {
@@ -38,70 +24,96 @@ export interface CrossTabulation {
   values: number[][];
 }
 
-export interface SurveyStatistics {
+export interface DemographicsData {
+  distributions: {
+    gender: Distribution;
+    respondent_age: Distribution;
+    education: Distribution;
+    [key: string]: Distribution;
+  };
+  cross_tabulations: {
+    gender_vs_position: CrossTabulation;
+    education_vs_business: CrossTabulation;
+    [key: string]: CrossTabulation;
+  };
+}
+
+export interface BasicStatistic {
   mean: number;
   median: number;
   std: number;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   distribution: { [key: string]: number };
 }
 
 export interface SurveyAnalysisData {
-  basic_statistics: { [variable: string]: SurveyStatistics };
+  basic_statistics: {
+    [variable: string]: BasicStatistic;
+  };
   correlation_matrix: {
     variables: string[];
     matrix: number[][];
   };
-  top_correlations: Array<{
+  top_correlations: {
     var1: string;
     var2: string;
     correlation: number;
-  }>;
+  }[];
+}
+
+export interface GenderComparison {
+  male_mean: number;
+  female_mean: number;
+  male_std: number;
+  female_std: number;
+  t_statistic: number;
+  p_value: number;
+  significant: boolean;
+}
+
+export interface AgeGroup {
+  age_group: string;
+  mean: number;
+  std: number;
+  count: number;
+}
+
+export interface BusinessField {
+  business_field: string;
+  mean: number;
+  std: number;
+  count: number;
 }
 
 export interface ComparativeAnalysisData {
   gender: {
-    [variable: string]: {
-      male_mean: number;
-      female_mean: number;
-      male_std: number;
-      female_std: number;
-      t_statistic: number;
-      p_value: number;
-      significant: boolean;
-    };
+    [variable: string]: GenderComparison;
   };
   age_groups: {
-    [variable: string]: Array<{
-      age_group: string;
-      mean: number;
-      std: number;
-      count: number;
-    }>;
+    [variable: string]: AgeGroup[];
   };
   business_fields: {
-    [variable: string]: Array<{
-      business_field: string;
-      mean: number;
-      std: number;
-      count: number;
-    }>;
+    [variable: string]: BusinessField[];
   };
 }
 
-export interface ClusterProfile {
+export interface Cluster {
   cluster_id: number;
   size: number;
   profile: { [variable: string]: number };
 }
 
+export interface ClusterResult {
+  clusters: Cluster[];
+  inertia: number;
+}
+
 export interface ClusteringData {
   clustering_results: {
-    [k: string]: {
-      clusters: ClusterProfile[];
-      inertia: number;
-    };
+    k_3: ClusterResult;
+    k_4: ClusterResult;
+    k_5?: ClusterResult;
   };
   visualization: {
     pca_components: number[][];
@@ -110,30 +122,55 @@ export interface ClusteringData {
   };
 }
 
+export interface TechnologyStatistic extends BasicStatistic {
+  distribution: { [key: string]: number };
+}
+
 export interface TechnologyAnalysisData {
-  technology_statistics: { [variable: string]: SurveyStatistics };
+  technology_statistics: {
+    [technology: string]: TechnologyStatistic;
+  };
   technology_by_demographics: {
-    gender: { [variable: string]: { male: number; female: number } };
-    business_fields: { [field: string]: { [variable: string]: number } };
+    gender: {
+      [technology: string]: {
+        male: number;
+        female: number;
+      };
+    };
+    business_fields: {
+      [businessField: string]: {
+        [technology: string]: number;
+      };
+    };
   };
   technology_performance_correlation: {
-    [techVar: string]: { [perfVar: string]: number };
+    [technology: string]: {
+      [performanceVariable: string]: number;
+    };
   };
+}
+
+export interface PartnershipImpact {
+  partnership_type: string;
+  mean_score: number;
+  count: number;
 }
 
 export interface PartnershipAnalysisData {
   partnership_distribution: {
-    [partnershipType: string]: DemographicDistribution;
+    double_partnership_dp: Distribution;
+    triple_partnership_tp: Distribution;
   };
   partnership_impact: {
-    [partnershipType: string]: {
-      [variable: string]: Array<{
-        partnership_type: string;
-        mean_score: number;
-        count: number;
-      }>;
+    double_partnership_dp: {
+      [variable: string]: PartnershipImpact[];
     };
   };
+}
+
+export interface KeyFinding {
+  category: string;
+  finding: string;
 }
 
 export interface ComprehensiveReportData {
@@ -143,23 +180,5 @@ export interface ComprehensiveReportData {
     survey_variables: number;
     technology_variables: number;
   };
-  key_findings: Array<{
-    category: string;
-    finding: string;
-  }>;
-}
-
-export interface ChartDataPoint {
-  name: string;
-  value: number;
-  percentage?: number;
-  color?: string;
-}
-
-export interface MetricCardData {
-  title: string;
-  value: string | number;
-  change?: string;
-  trend?: 'up' | 'down' | 'neutral';
-  icon?: string;
+  key_findings: KeyFinding[];
 }

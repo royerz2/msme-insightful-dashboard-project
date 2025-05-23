@@ -7,6 +7,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Overview from "./pages/Overview";
 import Demographics from "./pages/Demographics";
 import SurveyAnalysis from "./pages/SurveyAnalysis";
+import ComparativeAnalysis from "./pages/ComparativeAnalysis";
+import ClusteringAnalysis from "./pages/ClusteringAnalysis";
+import TechnologyAnalysis from "./pages/TechnologyAnalysis";
+import PartnershipAnalysis from "./pages/PartnershipAnalysis";
+import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,12 +26,11 @@ const App = () => (
           <Route path="/" element={<Overview />} />
           <Route path="/demographics" element={<Demographics />} />
           <Route path="/survey" element={<SurveyAnalysis />} />
-          {/* Placeholder routes for future development */}
-          <Route path="/comparative" element={<Overview />} />
-          <Route path="/clustering" element={<Overview />} />
-          <Route path="/technology" element={<Overview />} />
-          <Route path="/partnership" element={<Overview />} />
-          <Route path="/reports" element={<Overview />} />
+          <Route path="/comparative" element={<ComparativeAnalysis />} />
+          <Route path="/clustering" element={<ClusteringAnalysis />} />
+          <Route path="/technology" element={<TechnologyAnalysis />} />
+          <Route path="/partnership" element={<PartnershipAnalysis />} />
+          <Route path="/reports" element={<Reports />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
