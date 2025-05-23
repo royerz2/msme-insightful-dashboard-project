@@ -1,10 +1,25 @@
-
 // API Response types
 export interface ApiResponse<T> {
   data?: T;
   loading: boolean;
   error: string | null;
   useDummyData?: boolean;
+}
+
+// Chart data types
+export interface ChartDataPoint {
+  name: string;
+  value: number;
+  percentage?: number;
+}
+
+// UI Component types
+export interface MetricCardData {
+  title: string;
+  value: string | number;
+  change?: string;
+  trend?: 'up' | 'down' | 'neutral';
+  icon?: React.ReactNode;
 }
 
 export interface HealthResponse {

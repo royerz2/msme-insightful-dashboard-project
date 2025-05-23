@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -8,7 +7,7 @@ import ErrorMessage from '../components/common/ErrorMessage';
 import { TechnologyAnalysisData } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, HeatMap, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Cell } from 'recharts';
 
 const TechnologyAnalysis: React.FC = () => {
   const { data, loading, error, useDummyData } = useApiData<TechnologyAnalysisData>(apiEndpoints.technologyAnalysis);
