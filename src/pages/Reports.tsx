@@ -28,6 +28,23 @@ function wrapAbbreviations(text: string) {
 const Reports: React.FC = () => {
   const { data, loading, error, useDummyData } = useApiData<ComprehensiveReportData>(apiEndpoints.comprehensiveReport);
 
+  // Handle report downloads
+  const handleDownload = (reportType: string) => {
+    console.log(`Downloading ${reportType} report...`);
+    // Create a blob with sample content for demonstration
+    const content = `MSME Analytics Report - ${reportType}\n\nGenerated on: ${new Date().toLocaleDateString()}\n\nThis is a sample ${reportType.toLowerCase()} report containing comprehensive analysis of MSME survey data.\n\nTotal Respondents: ${data?.sample_info.total_respondents || 'N/A'}\nComplete Responses: ${data?.sample_info.complete_responses || 'N/A'}\nSurvey Variables: ${data?.sample_info.survey_variables || 'N/A'}`;
+    
+    const blob = new Blob([content], { type: reportType === 'Raw Data (CSV)' ? 'text/csv' : 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `msme-report-${reportType.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.${reportType.includes('CSV') ? 'csv' : 'txt'}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   // Format key findings by category
   const groupFindingsByCategory = (data?: ComprehensiveReportData) => {
     if (!data || !data.key_findings) return {};
@@ -146,19 +163,28 @@ const Reports: React.FC = () => {
                   <CardDescription>Download comprehensive analysis reports</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <button className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-md">
+                  <button 
+                    onClick={() => handleDownload('Full Report (PDF)')}
+                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-3 px-4 rounded-md transition-colors"
+                  >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m-9 4V7a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
                     </svg>
                     Full Report (PDF)
                   </button>
-                  <button className="w-full flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground py-2 px-4 rounded-md">
+                  <button 
+                    onClick={() => handleDownload('Executive Summary (PDF)')}
+                    className="w-full flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground py-3 px-4 rounded-md transition-colors"
+                  >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m-9 4V7a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
                     </svg>
                     Executive Summary (PDF)
                   </button>
-                  <button className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md">
+                  <button 
+                    onClick={() => handleDownload('Raw Data (CSV)')}
+                    className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md transition-colors"
+                  >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m-9 4V7a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
                     </svg>

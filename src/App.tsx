@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +10,6 @@ import SurveyAnalysis from "./pages/SurveyAnalysis";
 import ComparativeAnalysis from "./pages/ComparativeAnalysis";
 import ClusteringAnalysis from "./pages/ClusteringAnalysis";
 import TechnologyAnalysis from "./pages/TechnologyAnalysis";
-import PartnershipAnalysis from "./pages/PartnershipAnalysis";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import CorrelationalAnalysis from "./pages/CorrelationalAnalysis";
@@ -30,7 +30,6 @@ const App = () => (
           <Route path="/clustering" element={<ClusteringAnalysis />} />
           <Route path="/correlational" element={<CorrelationalAnalysis />} />
           <Route path="/technology" element={<TechnologyAnalysis />} />
-          <Route path="/partnership" element={<PartnershipAnalysis />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

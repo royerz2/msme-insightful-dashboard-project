@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -16,7 +15,6 @@ const sidebarItems: SidebarItem[] = [
   { name: 'Clustering', path: '/clustering', icon: '🎯' },
   { name: 'Correlational Analysis', path: '/correlational', icon: '🔗' },
   { name: 'Technology', path: '/technology', icon: '💻' },
-  { name: 'Partnership', path: '/partnership', icon: '🤝' },
   { name: 'Reports', path: '/reports', icon: '📄' },
 ];
 

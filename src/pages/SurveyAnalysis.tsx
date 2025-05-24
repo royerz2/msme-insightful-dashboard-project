@@ -57,7 +57,7 @@ const SurveyAnalysis: React.FC = () => {
         {/* Statistics Overview */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h3 className="text-xl font-bold mb-4 text-gray-900">Basic Statistics Overview</h3>
-          <div className="h-96">
+          <div className="h-[500px]">
             <BarChart
               data={statisticsData}
               title="Mean Values by Survey Variable"

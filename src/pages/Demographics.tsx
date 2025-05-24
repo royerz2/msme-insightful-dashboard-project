@@ -79,28 +79,30 @@ const Demographics: React.FC = () => {
 
         {/* Cross-tabulations */}
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-xl font-bold mb-4 text-gray-900">Cross-tabulation Analysis</h3>
+          <h3 className="text-xl font-bold mb-6 text-gray-900">Cross-tabulation Analysis</h3>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-8">
             {/* Gender vs Position */}
-            <div>
-              <h4 className="text-lg font-semibold mb-3 text-gray-800">Gender vs Position</h4>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h4 className="text-lg font-semibold mb-4 text-gray-800 border-b border-gray-200 pb-2">
+                Gender vs Position in Business
+              </h4>
               <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse border border-gray-300">
+                <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-sm">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="border border-gray-300 px-4 py-2 text-left">Gender</th>
+                    <tr className="bg-blue-600 text-white">
+                      <th className="px-6 py-3 text-left font-semibold">Gender</th>
                       {data.cross_tabulations.gender_vs_position.columns.map((col) => (
-                        <th key={col} className="border border-gray-300 px-4 py-2 text-center">{col}</th>
+                        <th key={col} className="px-4 py-3 text-center font-semibold text-sm">{col}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {data.cross_tabulations.gender_vs_position.index.map((row, rowIndex) => (
-                      <tr key={row} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-4 py-2 font-medium">{row}</td>
+                      <tr key={row} className={`${rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                        <td className="px-6 py-4 font-semibold text-gray-800 border-r border-gray-200">{row}</td>
                         {data.cross_tabulations.gender_vs_position.values[rowIndex].map((value, colIndex) => (
-                          <td key={colIndex} className="border border-gray-300 px-4 py-2 text-center">{value}</td>
+                          <td key={colIndex} className="px-4 py-4 text-center text-gray-700 font-medium">{value}</td>
                         ))}
                       </tr>
                     ))}
@@ -110,24 +112,26 @@ const Demographics: React.FC = () => {
             </div>
 
             {/* Education vs Business */}
-            <div>
-              <h4 className="text-lg font-semibold mb-3 text-gray-800">Education vs Business Field</h4>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h4 className="text-lg font-semibold mb-4 text-gray-800 border-b border-gray-200 pb-2">
+                Education Level vs Business Field
+              </h4>
               <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse border border-gray-300">
+                <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-sm">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="border border-gray-300 px-4 py-2 text-left">Education</th>
+                    <tr className="bg-green-600 text-white">
+                      <th className="px-6 py-3 text-left font-semibold">Education Level</th>
                       {data.cross_tabulations.education_vs_business.columns.map((col) => (
-                        <th key={col} className="border border-gray-300 px-4 py-2 text-center">{col}</th>
+                        <th key={col} className="px-4 py-3 text-center font-semibold text-sm">{col}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {data.cross_tabulations.education_vs_business.index.map((row, rowIndex) => (
-                      <tr key={row} className="hover:bg-gray-50">
-                        <td className="border border-gray-300 px-4 py-2 font-medium">{row}</td>
+                      <tr key={row} className={`${rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-green-50 transition-colors`}>
+                        <td className="px-6 py-4 font-semibold text-gray-800 border-r border-gray-200">{row}</td>
                         {data.cross_tabulations.education_vs_business.values[rowIndex].map((value, colIndex) => (
-                          <td key={colIndex} className="border border-gray-300 px-4 py-2 text-center">{value}</td>
+                          <td key={colIndex} className="px-4 py-4 text-center text-gray-700 font-medium">{value}</td>
                         ))}
                       </tr>
                     ))}
