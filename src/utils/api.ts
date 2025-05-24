@@ -25,4 +25,5 @@ export const apiEndpoints = {
   technologyAnalysis: '/technology-analysis',
   partnershipAnalysis: '/partnership-analysis',
   comprehensiveReport: '/comprehensive-report',
+  correlationalAnalysis: '/correlational-analysis',
 };

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import TechnologyAnalysis from "./pages/TechnologyAnalysis";
 import PartnershipAnalysis from "./pages/PartnershipAnalysis";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
+import CorrelationalAnalysis from "./pages/CorrelationalAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/survey" element={<SurveyAnalysis />} />
           <Route path="/comparative" element={<ComparativeAnalysis />} />
           <Route path="/clustering" element={<ClusteringAnalysis />} />
+          <Route path="/correlational" element={<CorrelationalAnalysis />} />
           <Route path="/technology" element={<TechnologyAnalysis />} />
           <Route path="/partnership" element={<PartnershipAnalysis />} />
           <Route path="/reports" element={<Reports />} />

@@ -14,6 +14,7 @@ const sidebarItems: SidebarItem[] = [
   { name: 'Survey Analysis', path: '/survey', icon: '📋' },
   { name: 'Comparative Analysis', path: '/comparative', icon: '⚖️' },
   { name: 'Clustering', path: '/clustering', icon: '🎯' },
+  { name: 'Correlational Analysis', path: '/correlational', icon: '🔗' },
   { name: 'Technology', path: '/technology', icon: '💻' },
   { name: 'Partnership', path: '/partnership', icon: '🤝' },
   { name: 'Reports', path: '/reports', icon: '📄' },

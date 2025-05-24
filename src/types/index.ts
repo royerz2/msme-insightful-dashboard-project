@@ -197,3 +197,17 @@ export interface ComprehensiveReportData {
   };
   key_findings: KeyFinding[];
 }
+
+export interface CorrelationMatrix {
+  it_variables?: string[];
+  partnership_variables?: string[];
+  survey_variables: string[];
+  matrix: number[][];
+}
+
+export interface CorrelationalAnalysisData {
+  it_survey_correlation?: CorrelationMatrix;
+  partnership_survey_correlation?: CorrelationMatrix & {
+    message?: string;
+  };
+}
