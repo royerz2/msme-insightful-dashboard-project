@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -28,10 +29,20 @@ const ClusteringAnalysis: React.FC = () => {
   const formatClusterSizeData = (data?: ClusteringData, k: 'k_3' | 'k_4' = 'k_3') => {
     if (!data || !data.clustering_results || !data.clustering_results[k]) return [];
     
-    return data.clustering_results[k].clusters.map((cluster) => ({
-      cluster: `Cluster ${cluster.cluster_id}`,
+    const clusterNames = getClusterNames(k);
+    return data.clustering_results[k].clusters.map((cluster, index) => ({
+      cluster: clusterNames[index] || `Group ${cluster.cluster_id}`,
       size: cluster.size
     }));
+  };
+
+  // Get meaningful cluster names based on business context
+  const getClusterNames = (k: 'k_3' | 'k_4') => {
+    if (k === 'k_3') {
+      return ['Traditional Businesses', 'Growth-Oriented SMEs', 'Innovation Leaders'];
+    } else {
+      return ['Conservative Enterprises', 'Steady Growth Firms', 'Digital Adopters', 'Innovation Champions'];
+    }
   };
 
   const pcaData = formatPcaData(data);
@@ -58,19 +69,21 @@ const ClusteringAnalysis: React.FC = () => {
   // Custom tooltip for cluster visualization
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
+      const clusterNames = getClusterNames(selectedK);
+      const clusterName = clusterNames[payload[0].payload.cluster] || `Group ${payload[0].payload.cluster}`;
       return (
-        <div className="bg-white p-2 border border-gray-200 shadow-lg rounded">
-          <p className="text-sm font-medium">Cluster: {payload[0].payload.cluster}</p>
-          <p className="text-xs">x: {payload[0].value.toFixed(2)}</p>
-          <p className="text-xs">y: {payload[1].value.toFixed(2)}</p>
+        <div className="bg-white p-3 border border-gray-200 shadow-lg rounded-lg">
+          <p className="text-sm font-medium text-gray-900">{clusterName}</p>
+          <p className="text-xs text-gray-600">Digital Readiness: {payload[0].value.toFixed(2)}</p>
+          <p className="text-xs text-gray-600">Business Performance: {payload[1].value.toFixed(2)}</p>
         </div>
       );
     }
     return null;
   };
 
-  // Cluster colors
-  const clusterColors = ['#3B82F6', '#F59E0B', '#10B981', '#8B5CF6'];
+  // Cluster colors with better contrast
+  const clusterColors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'];
 
   return (
     <Layout title="Clustering Analysis">
@@ -78,75 +91,101 @@ const ClusteringAnalysis: React.FC = () => {
         {error && <ErrorMessage message={error} useDummyData={useDummyData} />}
         
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Clustering Visualization</h2>
-          <p className="mb-4 text-gray-600">
-            PCA visualization of clusters. Each point represents a respondent, colored by their cluster assignment.
-          </p>
-          <div className="h-80">
+          <h2 className="text-2xl font-bold mb-4">Business Cluster Visualization</h2>
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <h3 className="font-semibold text-blue-900 mb-2">Understanding the Visualization</h3>
+            <p className="text-blue-800 text-sm leading-relaxed">
+              This scatter plot shows how businesses cluster based on their characteristics using Principal Component Analysis (PCA). 
+              Each point represents a business, and businesses with similar traits are grouped together and colored the same.
+              The two axes represent the most important factors that distinguish different types of businesses:
+            </p>
+            <ul className="text-blue-800 text-sm mt-2 ml-4 space-y-1">
+              <li>• <strong>Digital Readiness:</strong> How well businesses adopt and use technology</li>
+              <li>• <strong>Business Performance:</strong> Overall business capabilities and growth orientation</li>
+            </ul>
+          </div>
+          
+          <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 20 }}>
+              <ScatterChart margin={{ top: 20, right: 30, bottom: 80, left: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                 <XAxis 
                   type="number" 
                   dataKey="x" 
-                  name="Component 1" 
+                  name="Digital Readiness" 
                   domain={['dataMin - 0.5', 'dataMax + 0.5']} 
-                  label={{ value: 'Component 1', position: 'bottom' }}
-                  tickFormatter={value => typeof value === 'number' ? value.toFixed(2) : value}
+                  label={{ value: 'Digital Readiness →', position: 'bottom', offset: -20 }}
+                  tickFormatter={value => typeof value === 'number' ? value.toFixed(1) : value}
                 />
                 <YAxis 
                   type="number" 
                   dataKey="y" 
-                  name="Component 2" 
+                  name="Business Performance" 
                   domain={['dataMin - 0.5', 'dataMax + 0.5']} 
-                  label={{ value: 'Component 2', angle: -90, position: 'left' }}
-                  tickFormatter={value => typeof value === 'number' ? value.toFixed(2) : value}
+                  label={{ value: 'Business Performance →', angle: -90, position: 'insideLeft', textAnchor: 'middle' }}
+                  tickFormatter={value => typeof value === 'number' ? value.toFixed(1) : value}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend verticalAlign="bottom" align="center" />
-                {[...new Set(pcaData.map(item => item.cluster))].map(cluster => (
-                  <Scatter 
-                    key={cluster} 
-                    name={`Cluster ${cluster}`} 
-                    data={pcaData.filter(item => item.cluster === cluster)} 
-                    fill={clusterColors[Number(cluster) % clusterColors.length]} 
-                  />
-                ))}
+                <Legend 
+                  verticalAlign="bottom" 
+                  align="center" 
+                  wrapperStyle={{ paddingTop: '20px' }}
+                  iconType="circle"
+                />
+                {[...new Set(pcaData.map(item => item.cluster))].map(cluster => {
+                  const clusterNames = getClusterNames(selectedK);
+                  const clusterName = clusterNames[Number(cluster)] || `Group ${cluster}`;
+                  return (
+                    <Scatter 
+                      key={cluster} 
+                      name={clusterName}
+                      data={pcaData.filter(item => item.cluster === cluster)} 
+                      fill={clusterColors[Number(cluster) % clusterColors.length]}
+                    />
+                  );
+                })}
               </ScatterChart>
             </ResponsiveContainer>
           </div>
           {data?.visualization?.explained_variance_ratio && (
-            <p className="mt-2 text-sm text-gray-500">
-              Explained variance: 
-              Component 1 ({(data.visualization.explained_variance_ratio[0] * 100).toFixed(1)}%), 
-              Component 2 ({(data.visualization.explained_variance_ratio[1] * 100).toFixed(1)}%)
+            <p className="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded">
+              <strong>Technical Note:</strong> This visualization captures {((data.visualization.explained_variance_ratio[0] + data.visualization.explained_variance_ratio[1]) * 100).toFixed(1)}% 
+              of the total variation in the data (Digital Readiness: {(data.visualization.explained_variance_ratio[0] * 100).toFixed(1)}%, 
+              Business Performance: {(data.visualization.explained_variance_ratio[1] * 100).toFixed(1)}%)
             </p>
           )}
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Cluster Analysis</h2>
+          <h2 className="text-2xl font-bold mb-4">Business Cluster Analysis</h2>
           
           <Tabs value={selectedK} onValueChange={(value) => setSelectedK(value as 'k_3' | 'k_4')}>
             <TabsList className="mb-4">
-              <TabsTrigger value="k_3">K = 3 Clusters</TabsTrigger>
-              <TabsTrigger value="k_4">K = 4 Clusters</TabsTrigger>
+              <TabsTrigger value="k_3">3 Business Types</TabsTrigger>
+              <TabsTrigger value="k_4">4 Business Types</TabsTrigger>
             </TabsList>
             
             <TabsContent value="k_3" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Cluster Sizes (K=3)</CardTitle>
+                  <CardTitle>Business Type Distribution (3 Groups)</CardTitle>
+                  <p className="text-sm text-gray-600">Number of businesses in each category</p>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={clusterSizeData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <BarChart data={clusterSizeData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="cluster" />
+                        <XAxis 
+                          dataKey="cluster" 
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                          fontSize={12}
+                        />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="size" name="Count" fill="#3B82F6" />
+                        <Bar dataKey="size" name="Number of Businesses" fill="#3B82F6" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -155,26 +194,30 @@ const ClusteringAnalysis: React.FC = () => {
               
               <Card>
                 <CardHeader>
-                  <CardTitle>Cluster Profiles (K=3)</CardTitle>
+                  <CardTitle>Business Type Characteristics (3 Groups)</CardTitle>
+                  <p className="text-sm text-gray-600">Average scores for each business characteristic by group</p>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead>
                         <tr>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variable</th>
-                          {data?.clustering_results?.k_3?.clusters.map((cluster) => (
-                            <th key={cluster.cluster_id} className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Cluster {cluster.cluster_id}
-                            </th>
-                          ))}
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Characteristic</th>
+                          {data?.clustering_results?.k_3?.clusters.map((cluster, index) => {
+                            const clusterNames = getClusterNames('k_3');
+                            return (
+                              <th key={cluster.cluster_id} className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {clusterNames[index]}
+                              </th>
+                            );
+                          })}
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {clusterProfileVariables.map((variable) => (
                           <tr key={variable}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                              {variable}
+                              {variable.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                             </td>
                             {data?.clustering_results?.k_3?.clusters.map((cluster) => (
                               <td key={`${variable}-${cluster.cluster_id}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -193,17 +236,24 @@ const ClusteringAnalysis: React.FC = () => {
             <TabsContent value="k_4" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Cluster Sizes (K=4)</CardTitle>
+                  <CardTitle>Business Type Distribution (4 Groups)</CardTitle>
+                  <p className="text-sm text-gray-600">Number of businesses in each category</p>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={clusterSizeData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <BarChart data={clusterSizeData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="cluster" />
+                        <XAxis 
+                          dataKey="cluster" 
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                          fontSize={12}
+                        />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="size" name="Count" fill="#F59E0B" />
+                        <Bar dataKey="size" name="Number of Businesses" fill="#F59E0B" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -212,26 +262,30 @@ const ClusteringAnalysis: React.FC = () => {
               
               <Card>
                 <CardHeader>
-                  <CardTitle>Cluster Profiles (K=4)</CardTitle>
+                  <CardTitle>Business Type Characteristics (4 Groups)</CardTitle>
+                  <p className="text-sm text-gray-600">Average scores for each business characteristic by group</p>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead>
                         <tr>
-                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variable</th>
-                          {data?.clustering_results?.k_4?.clusters.map((cluster) => (
-                            <th key={cluster.cluster_id} className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Cluster {cluster.cluster_id}
-                            </th>
-                          ))}
+                          <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Characteristic</th>
+                          {data?.clustering_results?.k_4?.clusters.map((cluster, index) => {
+                            const clusterNames = getClusterNames('k_4');
+                            return (
+                              <th key={cluster.cluster_id} className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {clusterNames[index]}
+                              </th>
+                            );
+                          })}
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {clusterProfileVariables.map((variable) => (
                           <tr key={variable}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                              {variable}
+                              {variable.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                             </td>
                             {data?.clustering_results?.k_4?.clusters.map((cluster) => (
                               <td key={`${variable}-${cluster.cluster_id}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
