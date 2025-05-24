@@ -122,6 +122,15 @@ export interface Cluster {
 export interface ClusterResult {
   clusters: Cluster[];
   inertia: number;
+  anova_results?: AnovaResult[];
+}
+
+export interface AnovaResult {
+  variable: string;
+  f_statistic: number | null;
+  p_value: number | null;
+  significant: boolean;
+  message?: string;
 }
 
 export interface ClusteringData {
