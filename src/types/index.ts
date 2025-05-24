@@ -123,6 +123,7 @@ export interface ClusterResult {
   clusters: Cluster[];
   inertia: number;
   anova_results?: AnovaResult[];
+  performance_anova_results?: AnovaResult[];
 }
 
 export interface AnovaResult {

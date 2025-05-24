@@ -39,7 +39,7 @@ const ClusteringAnalysis: React.FC = () => {
   // Get meaningful cluster names based on business context
   const getClusterNames = (k: 'k_3' | 'k_4') => {
     if (k === 'k_3') {
-      return ['Traditional Businesses', 'Growth-Oriented SMEs', 'Innovation Leaders'];
+      return ['Traditional Businesses', 'Innovation Leaders', 'Moderate SMEs'];
     } else {
       return ['Conservative Enterprises', 'Digital Adopters', 'Steady Growth Firms', 'Innovation Champions'];
     }
@@ -246,7 +246,89 @@ const ClusteringAnalysis: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="differences" className="space-y-6">
-            <ClusterDifferencesAnalysis data={data} />
+            <Card>
+              <CardHeader>
+                <CardTitle>Statistical Differences Between Clusters</CardTitle>
+                <p className="text-sm text-gray-600">Analyzing for significant variations in characteristics across business types.</p>
+              </CardHeader>
+              <CardContent>
+                 <Tabs defaultValue="all_variables" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="all_variables">All Survey Variables</TabsTrigger>
+                    <TabsTrigger value="performance_variables">Business Performance Variables</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="all_variables" className="pt-4">
+                    <p className="text-gray-700 mb-4">
+                      To statistically determine if the differences in mean scores for each characteristic across the three clusters are significant, 
+                      methods like Analysis of Variance (ANOVA) are typically used. ANOVA tests if there are statistically significant differences 
+                      between the means of three or more independent groups.
+                    </p>
+                    <p className="text-gray-700 mb-4">
+                      Below are the ANOVA results for all survey variables. Variables with a 'Significant' status of Yes indicate that there is a statistically significant difference in the mean score across the clusters for that variable (p &lt; 0.05).
+                    </p>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                          <tr>
+                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variable</th>
+                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">F-Statistic</th>
+                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">P-Value</th>
+                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Significant Difference</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {data?.clustering_results?.k_3?.anova_results?.map((result) => (
+                            <tr key={result.variable}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.variable}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.f_statistic !== null ? result.f_statistic.toFixed(2) : 'N/A'}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.p_value !== null ? result.p_value.toFixed(3) : 'N/A'}</td>
+                              <td className={`px-6 py-4 whitespace-nowrap text-sm ${result.significant ? 'text-green-600 font-semibold' : 'text-red-600'}`}>
+                                {result.significant ? 'Yes' : 'No'}
+                              </td>
+                            </tr>
+                          ))}
+                          {!data?.clustering_results?.k_3?.anova_results && (
+                              <tr className="w-full text-center text-gray-500"><td colSpan={4}>ANOVA results not available.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="performance_variables" className="pt-4">
+                       <p className="text-gray-700 mb-4">
+                          Below are the ANOVA results specifically for key Business Performance variables. This helps to identify which performance aspects show statistically significant differences across the three business clusters.
+                       </p>
+                       <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                 <thead>
+                                      <tr>
+                                           <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variable</th>
+                                           <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">F-Statistic</th>
+                                           <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">P-Value</th>
+                                           <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Significant Difference</th>
+                                      </tr>
+                                 </thead>
+                                 <tbody className="bg-white divide-y divide-gray-200">
+                                      {data?.clustering_results?.k_3?.performance_anova_results?.map((result) => (
+                                           <tr key={result.variable}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.variable}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.f_statistic !== null ? result.f_statistic.toFixed(2) : 'N/A'}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.p_value !== null ? result.p_value.toFixed(3) : 'N/A'}</td>
+                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${result.significant ? 'text-green-600 font-semibold' : 'text-red-600'}`}>
+                                                     {result.significant ? 'Yes' : 'No'}
+                                                </td>
+                                           </tr>
+                                      ))}
+                                      {!data?.clustering_results?.k_3?.performance_anova_results && (
+                                           <tr className="w-full text-center text-gray-500"><td colSpan={4}>Performance ANOVA results not available.</td></tr>
+                                      )}
+                                 </tbody>
+                            </table>
+                       </div>
+                  </TabsContent>
+                 </Tabs>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
