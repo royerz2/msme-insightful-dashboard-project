@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -9,6 +8,77 @@ import ErrorMessage from '@/components/common/ErrorMessage';
 import { ComparativeAnalysisData } from '../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
+
+// Variable name mappings
+const VARIABLE_NAMES: { [key: string]: string } = {
+  'AU': 'Autonomy',
+  'INN': 'Innovation',
+  'RT': 'Risk Taking',
+  'PA': 'Proactiveness',
+  'CA': 'Competitive Aggressiveness',
+  'OEO': 'Organizational Entrepreneurial Orientation',
+  'OPC': 'Organizational Performance and Capabilities',
+  'RC': 'Resource Capabilities',
+  'CCC': 'Customer and Channel Capabilities',
+  'ORC': 'Operational Capabilities',
+  'STC': 'Strategic Capabilities',
+  'CMC': 'Change Management Capabilities',
+  'OEC': 'Organizational Excellence Capabilities',
+  'SU': 'Sustainability',
+  'SY': 'Synergy',
+  'CO': 'Collaboration',
+  'REO': 'Resource Efficiency and Optimization',
+  'OSRS': 'Organizational Structure and Resource Sharing',
+  'IA': 'Innovation Adoption',
+  'II': 'Innovation Implementation'
+};
+
+// Custom tooltip components
+const GenderTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
+        <p className="font-semibold">{VARIABLE_NAMES[label] || label}</p>
+        <p className="text-blue-600">Male: <span className="font-bold">{payload[0].value.toFixed(2)}</span></p>
+        <p className="text-pink-600">Female: <span className="font-bold">{payload[1].value.toFixed(2)}</span></p>
+        {payload[0].payload.significant && (
+          <p className="text-sm text-red-600 mt-1">* Statistically significant difference</p>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
+
+const AgeTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
+        <p className="font-semibold">{label}</p>
+        <p className="text-blue-600">
+          {VARIABLE_NAMES[payload[0].name.replace(' Mean', '')] || payload[0].name}: 
+          <span className="font-bold"> {payload[0].value.toFixed(2)}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const BusinessTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
+        <p className="font-semibold">{label}</p>
+        <p className="text-green-600">
+          {VARIABLE_NAMES[payload[0].name.replace(' Mean', '')] || payload[0].name}: 
+          <span className="font-bold"> {payload[0].value.toFixed(2)}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const ComparativeAnalysis: React.FC = () => {
   const [selectedVariable, setSelectedVariable] = useState('AU');
@@ -78,7 +148,7 @@ const ComparativeAnalysis: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" domain={[0, 7]} />
                 <YAxis dataKey="variable" type="category" width={80} />
-                <Tooltip />
+                <Tooltip content={<GenderTooltip />} />
                 <Legend />
                 <Bar dataKey="male" name="Male" fill="#3B82F6" />
                 <Bar dataKey="female" name="Female" fill="#EC4899" />
@@ -97,7 +167,9 @@ const ComparativeAnalysis: React.FC = () => {
               className="border rounded-md px-2 py-1 bg-white"
             >
               {variables.map(variable => (
-                <option key={variable} value={variable}>{variable}</option>
+                <option key={variable} value={variable}>
+                  {VARIABLE_NAMES[variable] || variable}
+                </option>
               ))}
             </select>
           </div>
@@ -110,7 +182,7 @@ const ComparativeAnalysis: React.FC = () => {
             <TabsContent value="age" className="pt-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Age Group Comparison: {selectedVariable}</CardTitle>
+                  <CardTitle>Age Group Comparison: {VARIABLE_NAMES[selectedVariable] || selectedVariable}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-80">
@@ -119,7 +191,7 @@ const ComparativeAnalysis: React.FC = () => {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="ageGroup" />
                         <YAxis domain={[0, 7]} />
-                        <Tooltip />
+                        <Tooltip content={<AgeTooltip />} />
                         <Legend />
                         <Line 
                           type="monotone" 
@@ -138,7 +210,7 @@ const ComparativeAnalysis: React.FC = () => {
             <TabsContent value="business" className="pt-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Business Field Comparison: {selectedVariable}</CardTitle>
+                  <CardTitle>Business Field Comparison: {VARIABLE_NAMES[selectedVariable] || selectedVariable}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-80">
@@ -147,7 +219,7 @@ const ComparativeAnalysis: React.FC = () => {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="business" />
                         <YAxis domain={[0, 7]} />
-                        <Tooltip />
+                        <Tooltip content={<BusinessTooltip />} />
                         <Legend />
                         <Bar 
                           dataKey="mean" 

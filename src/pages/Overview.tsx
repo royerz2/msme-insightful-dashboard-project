@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import MetricCard from '../components/common/MetricCard';
@@ -7,6 +6,22 @@ import ErrorMessage from '../components/common/ErrorMessage';
 import { useApiData } from '../hooks/useApiData';
 import { HealthResponse, ComprehensiveReportData } from '../types';
 import { apiEndpoints } from '../utils/api';
+import AbbrTooltip from '../components/AbbrTooltip';
+
+const ABBREVIATIONS = [
+  'AU', 'INN', 'RT', 'PA', 'CA', 'OEO', 'OPC', 'RC', 'CCC', 'ORC', 'STC', 'CMC', 'OEC', 'SU', 'SY', 'CO', 'REO', 'OSRS', 'IA', 'II',
+  'IT_SM', 'IT_CS', 'IT_PD', 'IT_DM', 'IT_KM', 'IT_SCM', 'ODTA', 'DP', 'TP', 'F&B'
+];
+
+function wrapAbbreviations(text: string) {
+  const parts = text.split(/(\b[A-Z_&]{2,}\b)/g);
+  return parts.map((part, i) => {
+    if (ABBREVIATIONS.includes(part)) {
+      return <AbbrTooltip abbr={part} key={i} />;
+    }
+    return part;
+  });
+}
 
 const Overview: React.FC = () => {
   const { data: healthData, loading: healthLoading, error: healthError } = useApiData<HealthResponse>(apiEndpoints.health);
@@ -85,7 +100,7 @@ const Overview: React.FC = () => {
               {reportData.key_findings.map((finding, index) => (
                 <div key={index} className="border-l-4 border-primary pl-4 py-2">
                   <h4 className="font-semibold text-primary">{finding.category}</h4>
-                  <p className="text-gray-700 mt-1">{finding.finding}</p>
+                  <p className="text-gray-700 mt-1">{wrapAbbreviations(finding.finding)}</p>
                 </div>
               ))}
             </div>

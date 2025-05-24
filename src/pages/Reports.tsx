@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -8,6 +7,23 @@ import ErrorMessage from '../components/common/ErrorMessage';
 import { ComprehensiveReportData } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import AbbrTooltip from '../components/AbbrTooltip';
+
+const ABBREVIATIONS = [
+  'AU', 'INN', 'RT', 'PA', 'CA', 'OEO', 'OPC', 'RC', 'CCC', 'ORC', 'STC', 'CMC', 'OEC', 'SU', 'SY', 'CO', 'REO', 'OSRS', 'IA', 'II',
+  'IT_SM', 'IT_CS', 'IT_PD', 'IT_DM', 'IT_KM', 'IT_SCM', 'ODTA', 'DP', 'TP', 'F&B'
+];
+
+function wrapAbbreviations(text: string) {
+  // Replace each abbreviation with the AbbrTooltip component
+  const parts = text.split(/(\b[A-Z_&]{2,}\b)/g);
+  return parts.map((part, i) => {
+    if (ABBREVIATIONS.includes(part)) {
+      return <AbbrTooltip abbr={part} key={i} />;
+    }
+    return part;
+  });
+}
 
 const Reports: React.FC = () => {
   const { data, loading, error, useDummyData } = useApiData<ComprehensiveReportData>(apiEndpoints.comprehensiveReport);
@@ -95,7 +111,7 @@ const Reports: React.FC = () => {
                   <CardContent>
                     <ul className="list-disc pl-5 space-y-2">
                       {keyFindingsByCategory[category].map((finding, index) => (
-                        <li key={index} className="text-gray-700">{finding}</li>
+                        <li key={index} className="text-gray-700">{wrapAbbreviations(finding)}</li>
                       ))}
                     </ul>
                   </CardContent>

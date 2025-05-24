@@ -79,6 +79,21 @@ const TechnologyAnalysis: React.FC = () => {
     return '#EF4444'; // Strong negative - red
   };
 
+  // Custom tooltip for Technology Adoption Overview
+  const TechOverviewTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
+          <p className="font-semibold">{label}</p>
+          <p className="text-blue-600">
+            Mean Adoption Score : <span className="font-bold">{payload[0].value.toFixed(2)}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Layout title="Technology Analysis">
       <div className="space-y-6 fade-in">
@@ -91,12 +106,18 @@ const TechnologyAnalysis: React.FC = () => {
           </p>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={techStatistics} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <BarChart data={techStatistics} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="technology" />
+                <XAxis 
+                  dataKey="technology" 
+                  angle={-45}
+                  textAnchor="end"
+                  height={120}
+                  tickFormatter={value => typeof value === 'number' ? value.toFixed(2) : value}
+                />
                 <YAxis domain={[0, 7]} />
-                <Tooltip />
-                <Legend />
+                <Tooltip content={<TechOverviewTooltip />} />
+                <Legend verticalAlign="top" align="center" />
                 <Bar dataKey="mean" name="Mean Adoption Score" fill="#3B82F6" />
               </BarChart>
             </ResponsiveContainer>
@@ -124,7 +145,12 @@ const TechnologyAnalysis: React.FC = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" domain={[0, 7]} />
-                      <YAxis dataKey="technology" type="category" />
+                      <YAxis 
+                        dataKey="technology" 
+                        type="category" 
+                        tick={{ fontSize: 11 }}
+                        width={120}
+                      />
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="male" name="Male" fill="#3B82F6" />

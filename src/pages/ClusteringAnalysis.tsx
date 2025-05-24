@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -85,7 +84,7 @@ const ClusteringAnalysis: React.FC = () => {
           </p>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
+              <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                 <XAxis 
                   type="number" 
@@ -93,6 +92,7 @@ const ClusteringAnalysis: React.FC = () => {
                   name="Component 1" 
                   domain={['dataMin - 0.5', 'dataMax + 0.5']} 
                   label={{ value: 'Component 1', position: 'bottom' }}
+                  tickFormatter={value => typeof value === 'number' ? value.toFixed(2) : value}
                 />
                 <YAxis 
                   type="number" 
@@ -100,9 +100,10 @@ const ClusteringAnalysis: React.FC = () => {
                   name="Component 2" 
                   domain={['dataMin - 0.5', 'dataMax + 0.5']} 
                   label={{ value: 'Component 2', angle: -90, position: 'left' }}
+                  tickFormatter={value => typeof value === 'number' ? value.toFixed(2) : value}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend verticalAlign="bottom" align="center" />
                 {[...new Set(pcaData.map(item => item.cluster))].map(cluster => (
                   <Scatter 
                     key={cluster} 
