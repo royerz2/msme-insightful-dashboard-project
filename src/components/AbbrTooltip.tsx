@@ -1,7 +1,9 @@
+
 import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 
 const ABBREVIATION_MAPPINGS: Record<string, string> = {
+  // Survey columns
   AU: 'Autonomy',
   INN: 'Innovation',
   RT: 'Risk Taking',
@@ -22,6 +24,8 @@ const ABBREVIATION_MAPPINGS: Record<string, string> = {
   OSRS: 'Organizational Structure and Resource Sharing',
   IA: 'Innovation Adoption',
   II: 'Innovation Implementation',
+  
+  // IT columns
   IT_SM: 'IT Social Media',
   IT_CS: 'IT Customer Service',
   IT_PD: 'IT Product Development',
@@ -29,8 +33,12 @@ const ABBREVIATION_MAPPINGS: Record<string, string> = {
   IT_KM: 'IT Knowledge Management',
   IT_SCM: 'IT Supply Chain Management',
   ODTA: 'Organizational Digital Technology Adoption',
+  
+  // Partnership columns
   DP: 'Double Partnership',
   TP: 'Triple Partnership',
+  
+  // Additional mappings for food & beverage
   'F&B': 'Food & Beverage',
 };
 
@@ -51,4 +59,4 @@ const AbbrTooltip: React.FC<AbbrTooltipProps> = ({ abbr, children }) => {
   );
 };
 
-export default AbbrTooltip; 
+export default AbbrTooltip;
