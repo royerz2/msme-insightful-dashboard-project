@@ -44,7 +44,7 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-3 border border-gray-200 shadow-lg rounded-lg">
-          <p className="text-sm font-medium text-gray-900">{label}</p>
+          <p className="text-sm font-medium text-maastricht-blue">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-xs" style={{ color: entry.color }}>
               {entry.name}: {entry.value.toFixed(3)}
@@ -57,21 +57,21 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Cluster Value Distribution by Variable</CardTitle>
-        <div className="text-sm text-gray-600">
+    <Card className="border-maastricht-blue/20">
+      <CardHeader className="bg-gradient-to-r from-maastricht-blue to-maastricht-teal">
+        <CardTitle className="text-white">Cluster Value Distribution by Variable</CardTitle>
+        <div className="text-sm text-white/90">
           Distribution of survey variable values across the three business clusters
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={boxPlotData}
               margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
             >
-              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
               <XAxis 
                 dataKey="variable" 
                 angle={-45}
@@ -79,20 +79,21 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
                 height={100}
                 fontSize={11}
                 interval={0}
+                stroke="#374151"
               />
-              <YAxis fontSize={11} />
+              <YAxis fontSize={11} stroke="#374151" />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Bar dataKey="cluster1" name="Traditional Businesses" fill="#F59E0B" opacity={0.8} />
-              <Bar dataKey="cluster2" name="Innovation Leaders" fill="#10B981" opacity={0.8} />
-              <Bar dataKey="cluster3" name="Moderate SMEs" fill="#8B5CF6" opacity={0.8} />
+              <Bar dataKey="cluster1" name="Traditional Businesses" fill="#0B5394" opacity={0.8} />
+              <Bar dataKey="cluster2" name="Innovation Leaders" fill="#0EA5E9" opacity={0.8} />
+              <Bar dataKey="cluster3" name="Moderate SMEs" fill="#22D3EE" opacity={0.8} />
               <Line 
                 type="monotone" 
                 dataKey="mean" 
-                stroke="#EF4444" 
+                stroke="#DC2626" 
                 strokeWidth={2}
                 name="Overall Mean"
-                dot={{ fill: '#EF4444', r: 3 }}
+                dot={{ fill: '#DC2626', r: 3 }}
               />
             </ComposedChart>
           </ResponsiveContainer>

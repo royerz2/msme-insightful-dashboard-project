@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Maastricht University Brand Colors
+				'maastricht-blue': '#0B5394',
+				'maastricht-teal': '#00A6D6',
+				'maastricht-light-blue': '#0EA5E9',
+				'maastricht-cyan': '#22D3EE',
+				'maastricht-gray': '#6B7280',
+				'maastricht-light-gray': '#F3F4F6'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

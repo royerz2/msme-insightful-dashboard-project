@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 212 83% 32%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -31,21 +31,21 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 212 83% 32%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-background: 212 83% 32%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary: 199 89% 48%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 221.2 83.2% 53.3%;
+    --sidebar-ring: 199 89% 48%;
 
-    --dashboard-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --chart-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --maastricht-gradient: linear-gradient(135deg, #0B5394 0%, #00A6D6 100%);
+    --chart-gradient: linear-gradient(135deg, #0EA5E9 0%, #22D3EE 100%);
   }
 
   .dark {
@@ -58,7 +58,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 212 83% 32%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -75,7 +75,7 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 212 83% 32%;
   }
 }
 
@@ -91,8 +91,8 @@
 }
 
 @layer components {
-  .dashboard-gradient {
-    background: var(--dashboard-gradient);
+  .maastricht-gradient {
+    background: var(--maastricht-gradient);
   }
   
   .chart-gradient {
@@ -104,7 +104,7 @@
   }
   
   .metric-card {
-    @apply bg-gradient-to-br from-white to-gray-50 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
+    @apply bg-gradient-to-br from-white to-maastricht-light-gray border border-maastricht-blue/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
   }
   
   .sidebar-item {
@@ -113,6 +113,14 @@
   
   .sidebar-item.active {
     @apply bg-sidebar-primary text-sidebar-primary-foreground shadow-lg;
+  }
+
+  .maastricht-button {
+    @apply bg-gradient-to-r from-maastricht-blue to-maastricht-teal text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5;
+  }
+
+  .maastricht-card {
+    @apply bg-white border border-maastricht-blue/20 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200;
   }
 }
 
