@@ -68,29 +68,6 @@ const Overview: React.FC = () => {
     },
   ];
 
-  const handleDownloadRawData = async () => {
-    try {
-      // Assuming a backend endpoint exists to handle raw data download
-      const response = await fetch('/api/download-raw-data');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      // Trigger file download
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'data.csv'; // Or determine filename from response headers
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading raw data:', error);
-      alert('Failed to download raw data. Please try again later.');
-    }
-  };
-
   return (
     <Layout title="Dashboard Overview">
       <div className="space-y-6 fade-in">
@@ -144,16 +121,6 @@ const Overview: React.FC = () => {
                 <span className="font-medium text-gray-900">{item.name}</span>
               </Link>
             ))}
-            {/* Download Raw Data Button */}
-            <button
-              onClick={handleDownloadRawData}
-              className="flex flex-col items-center p-4 rounded-lg border-2 border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200"
-            >
-              <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center text-white text-2xl mb-2">
-                📥
-              </div>
-              <span className="font-medium text-gray-900">Download Raw Data</span>
-            </button>
           </div>
         </div>
       </div>
