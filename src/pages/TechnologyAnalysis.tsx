@@ -35,33 +35,9 @@ const TechnologyAnalysis: React.FC = () => {
     }));
   };
 
-  // Format correlation data for heatmap
-  const formatTechCorrelationData = (data?: TechnologyAnalysisData) => {
-    if (!data || !data.technology_performance_correlation) return [];
-    
-    const result: { tech: string, variable: string, correlation: number }[] = [];
-    
-    Object.entries(data.technology_performance_correlation).forEach(([tech, correlations]) => {
-      Object.entries(correlations).forEach(([variable, value]) => {
-        result.push({
-          tech,
-          variable,
-          correlation: value
-        });
-      });
-    });
-    
-    return result;
-  };
-
   const techStatistics = formatTechStatistics(data);
   const techByGender = formatTechByGender(data);
-  const techCorrelations = formatTechCorrelationData(data);
   
-  // Get unique technologies and performance variables for the heatmap
-  const uniqueTech = [...new Set(techCorrelations.map(item => item.tech))];
-  const uniqueVariables = [...new Set(techCorrelations.map(item => item.variable))];
-
   if (loading) {
     return (
       <Layout title="Technology Analysis">
@@ -72,11 +48,15 @@ const TechnologyAnalysis: React.FC = () => {
 
   // Get color for correlation value
   const getCorrelationColor = (value: number) => {
-    if (value >= 0.6) return '#10B981'; // Strong positive - green
-    if (value >= 0.3) return '#60A5FA'; // Moderate positive - blue
-    if (value >= 0) return '#D1D5DB';  // Weak positive - light gray
-    if (value >= -0.3) return '#F59E0B'; // Weak negative - amber
-    return '#EF4444'; // Strong negative - red
+    if (value >= 0.7) return 'bg-green-600 text-white'; // Strong positive
+    if (value >= 0.5) return 'bg-green-500 text-white'; // Moderate to strong positive
+    if (value >= 0.3) return 'bg-green-400'; // Moderate positive
+    if (value >= 0.1) return 'bg-green-200'; // Weak positive
+    if (value <= -0.7) return 'bg-red-600 text-white'; // Strong negative
+    if (value <= -0.5) return 'bg-red-500 text-white'; // Moderate to strong negative
+    if (value <= -0.3) return 'bg-red-400'; // Moderate negative
+    if (value <= -0.1) return 'bg-red-200'; // Weak negative
+    return 'bg-gray-200';  // Very weak or no correlation
   };
 
   // Custom tooltip for Technology Adoption Overview
@@ -127,7 +107,6 @@ const TechnologyAnalysis: React.FC = () => {
         <Tabs defaultValue="demographics">
           <TabsList>
             <TabsTrigger value="demographics">Demographics</TabsTrigger>
-            <TabsTrigger value="performance">Performance Correlation</TabsTrigger>
           </TabsList>
           
           <TabsContent value="demographics" className="pt-4">
@@ -158,63 +137,6 @@ const TechnologyAnalysis: React.FC = () => {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="performance" className="pt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Technology-Performance Correlation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4 text-sm text-gray-600">
-                  Correlation between technology adoption and business performance variables.
-                  Higher values (green) indicate stronger positive relationships.
-                </p>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border border-gray-200">
-                    <thead>
-                      <tr>
-                        <th className="border border-gray-200 bg-gray-50 px-4 py-2">Technology / Variable</th>
-                        {uniqueVariables.map(variable => (
-                          <th key={variable} className="border border-gray-200 bg-gray-50 px-4 py-2">
-                            {variable}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {uniqueTech.map(tech => (
-                        <tr key={tech}>
-                          <td className="border border-gray-200 px-4 py-2 font-medium">{tech}</td>
-                          {uniqueVariables.map(variable => {
-                            const correlationItem = techCorrelations.find(
-                              item => item.tech === tech && item.variable === variable
-                            );
-                            const correlation = correlationItem ? correlationItem.correlation : 0;
-                            
-                            return (
-                              <td 
-                                key={`${tech}-${variable}`} 
-                                className="border border-gray-200 px-4 py-2 text-center"
-                                style={{ 
-                                  backgroundColor: getCorrelationColor(correlation),
-                                  color: correlation >= 0.3 ? 'white' : 'black'
-                                }}
-                              >
-                                {correlation.toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="mt-4 text-sm text-gray-500">
-                  Correlation strength: &lt;0.3 weak, 0.3-0.6 moderate, &gt;0.6 strong
-                </p>
               </CardContent>
             </Card>
           </TabsContent>

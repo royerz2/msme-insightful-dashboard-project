@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ClusteringData } from '../../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,27 +10,22 @@ interface ClusterBoxPlotProps {
 const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
   // Format data for box plot visualization
   const formatBoxPlotData = () => {
-    if (!data?.clustering_results?.k_3?.clusters) return [];
-    
-    const clusters = data.clustering_results.k_3.clusters;
+    if (!data?.clustering_results?.k_2?.clusters) return [];
+    const clusters = data.clustering_results.k_2.clusters;
     const variables = Object.keys(clusters[0]?.profile || {});
-    
     return variables.slice(0, 8).map(variable => {
       const clusterData = clusters.map((cluster, index) => ({
         cluster: `Cluster ${index + 1}`,
         value: cluster.profile[variable] || 0,
         variable
       }));
-      
       const values = clusterData.map(d => d.value);
       const mean = values.reduce((a, b) => a + b, 0) / values.length;
       const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
-      
       return {
         variable: variable.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         cluster1: clusterData[0]?.value || 0,
         cluster2: clusterData[1]?.value || 0,
-        cluster3: clusterData[2]?.value || 0,
         mean: mean,
         variance: variance
       };
@@ -47,7 +41,7 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
           <p className="text-sm font-medium text-maastricht-blue">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-xs" style={{ color: entry.color }}>
-              {entry.name}: {entry.value.toFixed(3)}
+              {entry.name}: {entry.value.toFixed(2)}
             </p>
           ))}
         </div>
@@ -61,7 +55,7 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
       <CardHeader className="bg-gradient-to-r from-maastricht-blue to-maastricht-teal">
         <CardTitle className="text-white">Cluster Value Distribution by Variable</CardTitle>
         <div className="text-sm text-white/90">
-          Distribution of survey variable values across the three business clusters
+          Distribution of survey variable values across the two business clusters
         </div>
       </CardHeader>
       <CardContent className="p-6">
@@ -84,9 +78,8 @@ const ClusterBoxPlot: React.FC<ClusterBoxPlotProps> = ({ data }) => {
               <YAxis fontSize={11} stroke="#374151" />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Bar dataKey="cluster1" name="Traditional Businesses" fill="#0B5394" opacity={0.8} />
-              <Bar dataKey="cluster2" name="Innovation Leaders" fill="#0EA5E9" opacity={0.8} />
-              <Bar dataKey="cluster3" name="Moderate SMEs" fill="#22D3EE" opacity={0.8} />
+              <Bar dataKey="cluster1" name="Cluster 1" fill="#0B5394" opacity={0.8} />
+              <Bar dataKey="cluster2" name="Cluster 2" fill="#0EA5E9" opacity={0.8} />
               <Line 
                 type="monotone" 
                 dataKey="mean" 

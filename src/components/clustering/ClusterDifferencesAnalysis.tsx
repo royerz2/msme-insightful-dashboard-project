@@ -1,17 +1,32 @@
-
 import React from 'react';
-import { ClusteringData, AnovaResult } from '../../types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { ClusteringData, FilteredPcaData } from '@/types';
 import ClusterBoxPlot from './ClusterBoxPlot';
 
 interface ClusterDifferencesAnalysisProps {
-  data?: ClusteringData;
+  data: ClusteringData | FilteredPcaData;
+}
+
+interface AnovaResult {
+  variable: string;
+  f_statistic: number | null;
+  p_value: number | null;
+  significant: boolean;
+  message?: string;
 }
 
 const ClusterDifferencesAnalysis: React.FC<ClusterDifferencesAnalysisProps> = ({ data }) => {
-  const anovaResults = data?.clustering_results?.k_3?.anova_results || [];
+  const getAnovaResults = (data: ClusteringData | FilteredPcaData): AnovaResult[] => {
+    if ('clustering_results' in data) {
+      return data.clustering_results.k_2?.anova_results || [];
+    } else {
+      // For filtered PCA data, we don't have ANOVA results
+      return [];
+    }
+  };
+
+  const anovaResults = getAnovaResults(data);
 
   const formatPValue = (pValue: number | null): string => {
     if (pValue === null || pValue === undefined) return 'N/A';
@@ -29,6 +44,28 @@ const ClusterDifferencesAnalysis: React.FC<ClusterDifferencesAnalysisProps> = ({
   const significantCount = anovaResults.filter(r => r.significant && !r.message).length;
   const totalCount = anovaResults.filter(r => !r.message).length;
 
+  if ('clustering' in data) {
+    return (
+      <div className="space-y-6">
+        <Card className="maastricht-card">
+          <CardHeader className="bg-gradient-to-r from-maastricht-blue to-maastricht-teal">
+            <CardTitle className="text-white">Filtered Analysis</CardTitle>
+            <div className="text-sm text-white/90">
+              Analysis for {data.filter_info.type === 'respondent_age' ? 'Respondent Age' : 'Working Period'}: {data.filter_info.value}
+              <br />
+              Sample Size: {data.filter_info.sample_size} businesses
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="text-center text-maastricht-gray">
+              ANOVA analysis is not available for filtered data.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Box Plot Visualization */}
@@ -36,18 +73,14 @@ const ClusterDifferencesAnalysis: React.FC<ClusterDifferencesAnalysisProps> = ({
 
       <Card className="maastricht-card">
         <CardHeader className="bg-gradient-to-r from-maastricht-blue to-maastricht-teal">
-          <CardTitle className="text-white">Statistical Differences Analysis (ANOVA)</CardTitle>
-          <div className="text-sm text-white/90 bg-white/10 p-4 rounded-lg mt-4">
-            <h4 className="font-semibold text-white mb-2">Understanding ANOVA Results</h4>
-            <p className="mb-2">
-              <strong>ANOVA (Analysis of Variance)</strong> tests whether there are statistically significant 
-              differences between the three business clusters for each survey variable.
-            </p>
-            <ul className="text-white/90 space-y-1 ml-4">
-              <li>• <strong>F-Statistic:</strong> Measures the ratio of variance between clusters to variance within clusters. Higher values suggest greater differences between clusters.</li>
-              <li>• <strong>P-Value:</strong> Probability that the observed differences occurred by chance. Values below 0.05 indicate statistically significant differences.</li>
-              <li>• <strong>Significant Difference:</strong> Variables marked as "Yes" show meaningful differences across the three business types.</li>
-            </ul>
+          <CardTitle className="text-white">Cluster Differences Analysis</CardTitle>
+          <div className="text-sm text-white/90">
+            Statistical analysis of differences between clusters
+            {significantCount > 0 && (
+              <span className="ml-2">
+                ({significantCount} of {totalCount} variables show significant differences)
+              </span>
+            )}
           </div>
         </CardHeader>
         <CardContent className="p-6">
@@ -81,23 +114,20 @@ const ClusterDifferencesAnalysis: React.FC<ClusterDifferencesAnalysisProps> = ({
                     </TableCell>
                     <TableCell className="text-center">
                       {result.message ? (
-                        <span className="text-maastricht-gray">-</span>
+                        <span className="text-maastricht-gray text-sm">{result.message}</span>
                       ) : (
-                        <span className={result.p_value !== null && result.p_value < 0.05 ? 'font-semibold text-maastricht-teal' : 'text-maastricht-blue'}>
+                        <span className={result.significant ? 'text-maastricht-teal font-medium' : 'text-maastricht-gray'}>
                           {formatPValue(result.p_value)}
                         </span>
                       )}
                     </TableCell>
                     <TableCell className="text-center">
                       {result.message ? (
-                        <Badge variant="secondary" className="bg-maastricht-gray/20 text-maastricht-gray">Error</Badge>
+                        <span className="text-maastricht-gray text-sm">{result.message}</span>
                       ) : (
-                        <Badge 
-                          variant={result.significant ? "default" : "secondary"}
-                          className={result.significant ? "bg-maastricht-teal text-white" : "bg-maastricht-light-gray text-maastricht-gray"}
-                        >
-                          {result.significant ? "Yes" : "No"}
-                        </Badge>
+                        <span className={result.significant ? 'text-maastricht-teal font-medium' : 'text-maastricht-gray'}>
+                          {result.significant ? 'Yes' : 'No'}
+                        </span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -105,12 +135,6 @@ const ClusterDifferencesAnalysis: React.FC<ClusterDifferencesAnalysisProps> = ({
               </TableBody>
             </Table>
           </div>
-          
-          {anovaResults.length === 0 && (
-            <div className="text-center py-8 text-maastricht-gray">
-              No ANOVA results available for K=3 clustering.
-            </div>
-          )}
         </CardContent>
       </Card>
 

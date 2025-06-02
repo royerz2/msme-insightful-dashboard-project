@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import BarChart from '../components/charts/BarChart';
@@ -106,13 +105,13 @@ const SurveyAnalysis: React.FC = () => {
             {data.top_correlations.slice(0, 9).map((correlation, index) => (
               <div key={index} className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-gray-200">
                 <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-gray-900">
+                  <div className="flex-1 mr-2 min-w-0">
+                    <p className="font-semibold text-gray-900" style={{ wordBreak: 'break-word' }}>
                       {correlation.var1} ↔ {correlation.var2}
                     </p>
                     <p className="text-sm text-gray-600">Correlation</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right flex-shrink-0">
                     <p className="text-2xl font-bold text-primary">
                       {correlation.correlation.toFixed(3)}
                     </p>

@@ -99,12 +99,21 @@ const ComparativeAnalysis: React.FC = () => {
 
   const formatAgeData = (data?: ComparativeAnalysisData, variable: string = 'AU') => {
     if (!data || !data.age_groups || !data.age_groups[variable]) return [];
-    return data.age_groups[variable].map(item => ({
-      ageGroup: item.age_group,
-      mean: item.mean,
-      std: item.std,
-      count: item.count
-    }));
+    const ageOrder: { [key: string]: number } = {
+      '<= 30 years': 1,
+      '31-40 years': 2,
+      '41-50 years': 3,
+      '51-60 years': 4,
+      '>=61 years': 5,
+    };
+    return data.age_groups[variable]
+      .map(item => ({
+        ageGroup: item.age_group,
+        mean: item.mean,
+        std: item.std,
+        count: item.count
+      }))
+      .sort((a, b) => ageOrder[a.ageGroup] - ageOrder[b.ageGroup]);
   };
 
   const formatBusinessData = (data?: ComparativeAnalysisData, variable: string = 'AU') => {
@@ -213,11 +222,18 @@ const ComparativeAnalysis: React.FC = () => {
                   <CardTitle>Business Field Comparison: {VARIABLE_NAMES[selectedVariable] || selectedVariable}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-80">
+                  <div className="h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={businessData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <BarChart data={businessData} margin={{ top: 20, right: 30, left: 20, bottom: 120 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="business" />
+                        <XAxis 
+                          dataKey="business" 
+                          angle={-30}
+                          textAnchor="end"
+                          height={80}
+                          style={{ fontSize: '0.8rem' }}
+                          interval={0}
+                        />
                         <YAxis domain={[0, 7]} />
                         <Tooltip content={<BusinessTooltip />} />
                         <Legend />

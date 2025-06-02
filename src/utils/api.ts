@@ -1,8 +1,8 @@
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 export const fetchWithErrorHandling = async <T>(endpoint: string): Promise<T> => {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`);
+    const response = await fetch(endpoint);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -17,13 +17,14 @@ export const fetchWithErrorHandling = async <T>(endpoint: string): Promise<T> =>
 };
 
 export const apiEndpoints = {
-  health: '/health',
-  demographics: '/demographics',
-  surveyAnalysis: '/survey-analysis',
-  comparativeAnalysis: '/comparative-analysis',
-  clustering: '/clustering',
-  technologyAnalysis: '/technology-analysis',
-  partnershipAnalysis: '/partnership-analysis',
-  comprehensiveReport: '/comprehensive-report',
-  correlationalAnalysis: '/correlational-analysis',
+  health: `${API_BASE_URL}/health`,
+  demographics: `${API_BASE_URL}/demographics`,
+  surveyAnalysis: `${API_BASE_URL}/survey-analysis`,
+  comparativeAnalysis: `${API_BASE_URL}/comparative-analysis`,
+  clustering: `${API_BASE_URL}/clustering`,
+  technologyAnalysis: `${API_BASE_URL}/technology-analysis`,
+  partnershipAnalysis: `${API_BASE_URL}/partnership-analysis`,
+  comprehensiveReport: `${API_BASE_URL}/comprehensive-report`,
+  correlationalAnalysis: `${API_BASE_URL}/correlational-analysis`,
+  filteredPca: `${API_BASE_URL}/filtered-pca`,
 };

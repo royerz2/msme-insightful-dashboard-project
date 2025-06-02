@@ -136,14 +136,70 @@ export interface AnovaResult {
 
 export interface ClusteringData {
   clustering_results: {
-    k_3: ClusterResult;
-    k_4: ClusterResult;
-    k_5?: ClusterResult;
+    k_2: {
+      clusters: Array<{
+        cluster_id: number;
+        size: number;
+        profile: Record<string, number>;
+      }>;
+      anova_results?: Array<{
+        variable: string;
+        f_statistic: number | null;
+        p_value: number | null;
+        significant: boolean;
+        message?: string;
+      }>;
+    };
+    k_3?: {
+      clusters: Array<{
+        cluster_id: number;
+        size: number;
+        profile: Record<string, number>;
+      }>;
+      anova_results?: Array<{
+        variable: string;
+        f_statistic: number | null;
+        p_value: number | null;
+        significant: boolean;
+        message?: string;
+      }>;
+    };
   };
   visualization: {
     pca_components: number[][];
     cluster_labels: number[];
     explained_variance_ratio: number[];
+  };
+  demographics?: {
+    [key: string]: {
+      labels: string[];
+      values: number[];
+      percentages: number[];
+    };
+  };
+}
+
+export interface FilteredPcaData {
+  pca_data: {
+    components: number[][];
+    explained_variance_ratio: number[];
+    loadings: {
+      PC1: Record<string, number>;
+      PC2: Record<string, number>;
+    };
+  };
+  clustering: {
+    labels: number[];
+    clusters: Array<{
+      cluster_id: number;
+      size: number;
+      profile: Record<string, number>;
+    }>;
+  };
+  filter_info: {
+    type: string;
+    value: string;
+    sample_size: number;
   };
 }
 
@@ -210,14 +266,21 @@ export interface ComprehensiveReportData {
 
 export interface CorrelationMatrix {
   it_variables?: string[];
-  partnership_variables?: string[];
   survey_variables: string[];
+  matrix: number[][];
+}
+
+export interface AgeCorrelationMatrix {
+  age_variable: string;
+  it_variables?: string[];
+  performance_variables?: string[];
   matrix: number[][];
 }
 
 export interface CorrelationalAnalysisData {
   it_survey_correlation?: CorrelationMatrix;
-  partnership_survey_correlation?: CorrelationMatrix & {
-    message?: string;
-  };
+  age_it_correlation?: AgeCorrelationMatrix;
+  company_age_it_correlation?: AgeCorrelationMatrix;
+  company_age_performance_correlation?: AgeCorrelationMatrix;
+  age_performance_correlation?: AgeCorrelationMatrix;
 }

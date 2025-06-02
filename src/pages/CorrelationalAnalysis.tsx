@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -45,47 +44,69 @@ const CorrelationalAnalysis: React.FC = () => {
             <CardHeader>
               <CardTitle>IT Adoption vs Business Performance Correlation</CardTitle>
               <p className="text-sm text-gray-600">
-                How technology adoption correlates with various business performance indicators
+                How IT adoption correlates with various business performance indicators
               </p>
             </CardHeader>
             <CardContent>
               <CorrelationHeatmap
-                rowVariables={data.it_survey_correlation.it_variables || []}
+                rowVariables={data.it_survey_correlation.it_variables}
                 columnVariables={data.it_survey_correlation.survey_variables}
                 matrix={data.it_survey_correlation.matrix}
-                title="Technology Adoption Impact on Business Performance"
+                title="IT Adoption Impact on Business Performance"
               />
             </CardContent>
           </Card>
         )}
 
-        {data?.partnership_survey_correlation && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Respondent Age vs IT Adoption Correlation</CardTitle>
+            <p className="text-sm text-gray-600">
+              Analysis of how respondent age correlates with IT adoption patterns
+            </p>
+          </CardHeader>
+          <CardContent className="text-center py-8">
+            <p className="text-gray-500">No correlation data found for this analysis.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Company Age vs IT Adoption Correlation</CardTitle>
+            <p className="text-sm text-gray-600">
+              Analysis of how company age correlates with IT adoption patterns
+            </p>
+          </CardHeader>
+          <CardContent className="text-center py-8">
+            <p className="text-gray-500">No correlation data found for this analysis.</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Company Age vs Business Performance Correlation</CardTitle>
+            <p className="text-sm text-gray-600">
+              Analysis of how company age correlates with business performance indicators
+            </p>
+          </CardHeader>
+          <CardContent className="text-center py-8">
+            <p className="text-gray-500">No correlation data found for this analysis.</p>
+          </CardContent>
+        </Card>
+
           <Card>
             <CardHeader>
-              <CardTitle>Partnership Strategy vs Business Performance Correlation</CardTitle>
+            <CardTitle>Respondent Age vs Business Performance Correlation</CardTitle>
               <p className="text-sm text-gray-600">
-                How partnership strategies correlate with various business performance indicators
+              Analysis of how respondent age correlates with business performance indicators
               </p>
             </CardHeader>
-            <CardContent>
-              {data.partnership_survey_correlation.message ? (
-                <div className="bg-amber-50 border border-amber-200 text-amber-700 p-4 rounded-md">
-                  <p className="font-semibold">⚠️ Limited Data Available</p>
-                  <p className="text-sm">{data.partnership_survey_correlation.message}</p>
-                </div>
-              ) : (
-                <CorrelationHeatmap
-                  rowVariables={data.partnership_survey_correlation.partnership_variables || []}
-                  columnVariables={data.partnership_survey_correlation.survey_variables}
-                  matrix={data.partnership_survey_correlation.matrix}
-                  title="Partnership Strategy Impact on Business Performance"
-                />
-              )}
+          <CardContent className="text-center py-8">
+            <p className="text-gray-500">No correlation data found for this analysis.</p>
             </CardContent>
           </Card>
-        )}
 
-        {!data?.it_survey_correlation && !data?.partnership_survey_correlation && !loading && (
+        {!data?.it_survey_correlation && !loading && (
           <Card>
             <CardContent className="text-center py-8">
               <p className="text-gray-500">No correlation data available at this time.</p>

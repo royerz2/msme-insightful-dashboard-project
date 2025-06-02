@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -17,10 +16,12 @@ const CorrelationHeatmap: React.FC<CorrelationHeatmapProps> = ({
 }) => {
   const getColorIntensity = (value: number) => {
     const absValue = Math.abs(value);
-    if (absValue >= 0.7) return value > 0 ? 'bg-green-600 text-white' : 'bg-red-600 text-white';
-    if (absValue >= 0.5) return value > 0 ? 'bg-green-400 text-white' : 'bg-red-400 text-white';
-    if (absValue >= 0.3) return value > 0 ? 'bg-green-200' : 'bg-red-200';
-    if (absValue >= 0.1) return value > 0 ? 'bg-green-100' : 'bg-red-100';
+    if (value >= 0.5) return 'bg-green-600 text-white';
+    if (value <= -0.5) return 'bg-red-600 text-white';
+    if (value >= 0.3) return 'bg-green-400 text-white';
+    if (value <= -0.3) return 'bg-red-400 text-white';
+    if (value >= 0.1) return 'bg-green-200';
+    if (value <= -0.1) return 'bg-red-200';
     return 'bg-gray-50';
   };
 
