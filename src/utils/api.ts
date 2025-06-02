@@ -1,3 +1,4 @@
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 export const fetchWithErrorHandling = async <T>(endpoint: string): Promise<T> => {
@@ -27,4 +28,5 @@ export const apiEndpoints = {
   comprehensiveReport: `${API_BASE_URL}/comprehensive-report`,
   correlationalAnalysis: `${API_BASE_URL}/correlational-analysis`,
   filteredPca: `${API_BASE_URL}/filtered-pca`,
+  compositeScores: `${API_BASE_URL}/composite-scores`,
 };

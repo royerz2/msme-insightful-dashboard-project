@@ -7,6 +7,18 @@ interface MetricCardProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ data }) => {
+  // Handle undefined data gracefully
+  if (!data) {
+    return (
+      <div className="metric-card rounded-lg p-6 bg-gray-100">
+        <div className="animate-pulse">
+          <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+          <div className="h-8 bg-gray-300 rounded w-1/2"></div>
+        </div>
+      </div>
+    );
+  }
+
   const { title, value, change, trend, icon } = data;
 
   const getTrendColor = () => {

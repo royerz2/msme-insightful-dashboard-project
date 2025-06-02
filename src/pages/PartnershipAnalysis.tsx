@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/layout/Layout';
 import { useApiData } from '../hooks/useApiData';
@@ -52,11 +51,14 @@ const PartnershipAnalysis: React.FC = () => {
 
   const CustomPieTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
+      const value = payload[0].value;
+      const percentage = payload[0].payload.percentage;
+      
       return (
         <div className="bg-white p-2 border border-gray-200 shadow-lg rounded">
           <p className="text-sm font-semibold">{payload[0].name}</p>
-          <p className="text-xs">{`Count: ${payload[0].value}`}</p>
-          <p className="text-xs">{`Percentage: ${payload[0].payload.percentage.toFixed(1)}%`}</p>
+          <p className="text-xs">{`Count: ${value}`}</p>
+          <p className="text-xs">{`Percentage: ${typeof percentage === 'number' ? percentage.toFixed(1) : percentage}%`}</p>
         </div>
       );
     }
@@ -67,6 +69,21 @@ const PartnershipAnalysis: React.FC = () => {
     <Layout title="Partnership Analysis">
       <div className="space-y-6 fade-in">
         {error && <ErrorMessage message={error} useDummyData={useDummyData} />}
+        
+        {/* Header with GPT Insights */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Partnership Analysis</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            Analysis of partnership patterns and their impact on MSME performance
+          </p>
+          <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
+            <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">🤖 AI Insights</h4>
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              Partnership strategies show significant variations across different enterprise types, 
+              with collaborative arrangements demonstrating measurable impacts on operational efficiency and innovation capacity.
+            </p>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
@@ -82,7 +99,7 @@ const PartnershipAnalysis: React.FC = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percentage }) => `${name}: ${percentage.toFixed(1)}%`}
+                      label={({ name, percentage }) => `${name}: ${typeof percentage === 'number' ? percentage.toFixed(1) : percentage}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -114,7 +131,7 @@ const PartnershipAnalysis: React.FC = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percentage }) => `${name}: ${percentage.toFixed(1)}%`}
+                      label={({ name, percentage }) => `${name}: ${typeof percentage === 'number' ? percentage.toFixed(1) : percentage}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -136,7 +153,7 @@ const PartnershipAnalysis: React.FC = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Partnership Impact on Performance (AU)</CardTitle>
+            <CardTitle>Partnership Impact on Performance (Autonomy)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -155,12 +172,12 @@ const PartnershipAnalysis: React.FC = () => {
                   <YAxis domain={[0, 7]} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="score" name="AU Performance Score" fill="#3B82F6" />
+                  <Bar dataKey="score" name="Autonomy Performance Score" fill="#3B82F6" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <p className="text-sm text-gray-500 mt-4 text-center">
-              Comparison of performance scores (AU) across different partnership types
+              Comparison of performance scores (Autonomy) across different partnership types
             </p>
           </CardContent>
         </Card>
